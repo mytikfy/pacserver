@@ -1,0 +1,10 @@
+build/
+dist/
+pacdb/
+paccache*/
+index.html*
+tags
+*.zst*
+*.tar
+xxx*
+.exrc

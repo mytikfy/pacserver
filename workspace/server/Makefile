@@ -45,10 +45,12 @@
 
 
 # Environment 
-MKDIR=mkdir
+MKDIR=@mkdir
 CP=cp
 CCADMIN=CCadmin
-
+CC=@echo compiling $< && gcc
+CXX=@echo compiling $< && g++
+RM=@rm -f
 
 # build
 build: .build-post
@@ -59,6 +61,16 @@ build: .build-post
 .build-post: .build-impl
 # Add your post 'build' code here...
 
+# ctags
+ctags: 
+	@find . -name \*.cc -o -name \*.cpp -o -name \*.h | xargs ctags
+
+# docker
+docker: all FORCE
+	docker build -t colon:5000/pacserver:latest .
+	docker push colon:5000/pacserver:latest
+
+FORCE:
 
 # clean
 clean: .clean-post
@@ -69,7 +81,6 @@ clean: .clean-post
 .clean-post: .clean-impl
 # Add your post 'clean' code here...
 
-
 # clobber
 clobber: .clobber-post
 
@@ -78,7 +89,6 @@ clobber: .clobber-post
 
 .clobber-post: .clobber-impl
 # Add your post 'clobber' code here...
-
 
 # all
 all: .all-post
@@ -89,7 +99,6 @@ all: .all-post
 .all-post: .all-impl
 # Add your post 'all' code here...
 
-
 # build tests
 build-tests: .build-tests-post
 
@@ -98,7 +107,6 @@ build-tests: .build-tests-post
 
 .build-tests-post: .build-tests-impl
 # Add your post 'build-tests' code here...
-
 
 # run tests
 test: .test-post
@@ -109,7 +117,6 @@ test: .test-post
 .test-post: .test-impl
 # Add your post 'test' code here...
 
-
 # help
 help: .help-post
 
@@ -118,7 +125,6 @@ help: .help-post
 
 .help-post: .help-impl
 # Add your post 'help' code here...
-
 
 
 # include project implementation makefile

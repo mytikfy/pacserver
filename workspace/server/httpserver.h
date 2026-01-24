@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <mqueue.h>
+#include <pthread.h>
 
 #include <string>
 #include <map>
@@ -116,10 +118,11 @@ class HttpServer
 		class Request
 		{
 			public:
-				void parseMethod(const std::string& line);
+				bool parseMethod(const std::string& line);
 
 				void setMethod(const std::string& method);
 				void setPath(const std::string& path);
+				void setPeer(const char *name);
 				void addHeader(HeaderLine::Base *headerline);
 				void addHeader(const std::string& key, const std::string& value, uint32_t flags = 0);
 
@@ -131,6 +134,7 @@ class HttpServer
 				std::string path() const;
 				std::string url() const;
 				std::vector<std::string> headers() const;
+				std::string peer() const;
 
 				void print() const;
 
@@ -147,6 +151,7 @@ class HttpServer
 				std::string m_protocol = "HTTP/1.1";
 				std::string m_fragment;
 				std::map<const std::string, HeaderLine::Base *> m_headers;
+				std::string m_peer;
 		};
 
 		class Response
@@ -158,8 +163,10 @@ class HttpServer
 				void addHeader(HeaderLine::Base *headerline);
 				void addHeader(const std::string& key, const std::string& value, uint32_t flags = 0);
 				void addBody(int c);
-				// std::string body() const;
+				void addBody(const std::string& data);
+
 				int body(std::vector<uint8_t>& data) const;
+				size_t bodySize() const;
 				int status() const;
 				time_t lastModifiedGMT();
 
@@ -168,6 +175,7 @@ class HttpServer
 
 				void setBody(const std::string& body);
 				void setBody(FILE *file);
+				void close();
 
 				HeaderLine::Base *findHeader(const std::string& key);
 
@@ -191,9 +199,49 @@ class HttpServer
 
 				struct {
 					std::vector<uint8_t> data;
-					FILE *file;
-					size_t size;
+					FILE *file = nullptr;
+					size_t size = 0;
 				} m_body;
+		};
+
+		class Worker
+		{
+			public:
+				typedef struct {
+					int type;
+					int socket;
+				} IPC_Data;
+
+			public:
+				Worker(int id);
+
+				void start();
+				void term();
+				bool isIdle() const;
+				int id() const;
+
+				virtual Request *parse(const char *data, size_t size);
+
+			protected:
+				virtual Response *process(Request *request);
+
+			private:
+				void *run();
+
+			private:
+				static void *trampoline(void *args);
+
+			private:
+				int m_id = -1;
+				bool m_term = false;
+				bool m_idle = true;
+
+				pthread_t m_thread = 0;
+
+				struct {
+					std::string name;
+					mqd_t read = 0;
+				} m_mq;
 		};
 
 		class Tools
@@ -202,24 +250,45 @@ class HttpServer
 				// IMF-fixdate conversion, RFC5322
 				static time_t fromHttpDate(const std::string& date);
 				static bool endsWith(const std::string& line, const std::string& ending);
+				static std::vector<std::string> split(const std::string& line, char tk);
+				static std::string fmttime(int offset);
+				static std::string join(const std::vector<std::string>& pack, int index, char sep);
+				static int mkdirs(const std::string& ddir, const std::vector<std::string>& path);
+				static std::string toHex(int value);
+				static inline void ltrim(std::string& s);
+				static inline void rtrim(std::string& s);
+				static inline std::string fromUrlEncoding(const std::string& from);
+
+
 		};
+
+	private:
+		typedef struct {
+			mqd_t write = 0;
+			Worker *worker = nullptr;
+		} ThreadController;
 
 	public:
 		HttpServer(int port);
 		virtual ~HttpServer();
 
-		void run();
+		void run(int threads = 1);
 
 	protected:
-		virtual Response *process(Request *request);
+		// virtual Response *process(Request *request);
+
+		virtual Worker *createWorker(int index);
+		void term();
 
 	private:
 		void accept(int serverSocket);
-		Request *parse(const char *data, size_t size);
+		// Request *parse(const char *data, size_t size);
 
 	private:
 		int m_port = 80;
 		bool m_term = false;
+
+		std::vector<ThreadController *> m_workers;
 };
 
 #endif /* HTTPSERVER_H */

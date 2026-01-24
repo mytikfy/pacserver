@@ -10,6 +10,8 @@
 #include "httpclient.h"
 #include "version.h"
 
+// #include "malloc.cc"
+
 int main(int argc, char *argv[])
 {
 	setvbuf(stdin, NULL, _IONBF, 0);
@@ -34,6 +36,7 @@ int main(int argc, char *argv[])
 	std::string config = "./pacconfig";
 	int port = 80;
 	bool store = false;
+	int worker = 1;
 
 	for (int i = 1; i < argc; i++) {
 		if (!strncmp(argv[i], "--client", 8)) {
@@ -46,7 +49,11 @@ int main(int argc, char *argv[])
 			file = nextArg(i);
 		}
 		else if (!strncmp(argv[i], "--port", 6)) {
-			port = ::strtol(nextArg(i), nullptr, 10);;
+			port = ::strtol(nextArg(i), nullptr, 10);
+		}
+		else if (!strncmp(argv[i], "--worker", 8)) {
+			worker = ::strtol(nextArg(i), nullptr, 10);
+			worker = 1;	// multiple worker not working
 		}
 		else if (!strncmp(argv[i], "--cache", 7)) {
 			cache = nextArg(i);
@@ -61,11 +68,16 @@ int main(int argc, char *argv[])
 			printf("version: v%s\n", VERSION);
 			exit(0);
 		}
+		else if (!strncmp(argv[i], "--", 2)) {
+			break;
+		}
 	}
 
 	if (host.empty()) {
 		PacProxy server(port, config, cache);
-		server.run();
+		server.run(worker);
+
+		printf("all done\n");
 	}
 	else {
 		(void) store;
@@ -87,7 +99,6 @@ int main(int argc, char *argv[])
 		request.addHeader("accept", "*/*", 0);
 
 		HttpClient client(host, port);
-
 		HttpServer::Response *response = client.get(&request, fhd);
 
 		printf("client.get ready\n");
@@ -98,6 +109,7 @@ int main(int argc, char *argv[])
 		else {
 			if (fhd) {
 				fclose(fhd);
+				fhd = nullptr;
 			}
 			else {
 				std::vector<uint8_t> body;
@@ -110,5 +122,5 @@ int main(int argc, char *argv[])
 		}
 	}
 
-    return 0;
+	return 0;
 }

@@ -14,84 +14,6 @@
 
 #include "httpclient.h"
 
-#if 0
-using namespace std;
-
-int xmain()
-{
-    // Set the URL and headers for the API call
-    string url = "https://api.example.com/endpoint";
-    vector<string> headers = {"Authorization: Bearer YOUR_API_KEY", "Content-Type: application/json"};
-
-    // Create a socket object
-    int sock;
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("socket failed");
-        return 1;
-    }
-
-    // Set the request headers and body
-    vector<string> request_headers;
-    for (const string& header : headers) {
-        request_headers.push_back(header);
-    }
-    string request = "GET " + url + " HTTP/1.1\r\n";
-    for (const string& header : request_headers) {
-        request += header + "\r\n";
-    }
-    request += "\r\n";
-
-    // Connect to the API server
-    struct sockaddr_in server;
-    server.sin_family = AF_INET;
-    server.sin_port = htons(80);
-    if (inet_pton(AF_INET, "api.example.com", &server.sin_addr) <= 0) {
-        perror("inet_pton failed");
-        return 1;
-    }
-    if (connect(sock, (struct sockaddr *)&server, sizeof(server)) < 0) {
-        perror("connect failed");
-        return 1;
-    }
-
-    // Send the request to the server
-    send(sock, request.c_str(), request.size(), 0);
-
-    // Read the response from the server
-    vector<string> response_headers;
-    while (true) {
-        char line[1024];
-        int bytes = recv(sock, line, sizeof(line), 0);
-        if (bytes <= 0) {
-            break;
-        }
-        string header = string(line, bytes);
-        response_headers.push_back(header);
-    }
-    vector<string> response_body;
-    while (true) {
-        char line[1024];
-        int bytes = recv(sock, line, sizeof(line), 0);
-        if (bytes <= 0) {
-            break;
-        }
-        string datum = string(line, bytes);
-        response_body.push_back(datum);
-    }
-
-    // Print the response headers and body
-    for (const string& header : response_headers) {
-        cout << header << endl;
-    }
-    for (const string& datum : response_body) {
-        cout << datum << endl;
-    }
-
-    return 0;
-}
-
-#endif
-
 HttpClient::HttpClient(const std::string& host, int port)
 	: m_host(host), m_port(port)
 {
@@ -123,7 +45,7 @@ int HttpClient::receiveBlock(int sock, int& state, std::string& line, HttpServer
 
 	if (bytes <= 0) {
  		perror("rceiv");
-		// exit(32);
+		exit(32);
 
 		return 0;
 	}
@@ -145,9 +67,12 @@ int HttpClient::receiveBlock(int sock, int& state, std::string& line, HttpServer
 
 					HttpServer::HeaderLine::Base *hlb = retv->findHeader("content-length");
 
-					if ((hlb != nullptr) && (hlb->type() == HttpServer::HeaderLine::HEADER_CONTENTLENGTH))  {
+					if ((hlb != nullptr) && (hlb->type() == HttpServer::HeaderLine::HEADER_CONTENTLENGTH)) {
 						count = ((HttpServer::HeaderLine::ContentLength *)hlb)->contentLength();
 						printf("expected filelength :%ld\n", count);
+					}
+					else {
+						return true;
 					}
 				}
 				else {
@@ -192,28 +117,34 @@ HttpServer::Response *HttpClient::get(HttpServer::Request *request, FILE *fhd)
 	std::vector<std::string> headers = request->headers();
 
 	int sock;
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("socket failed");
-        exit(6);
-    }
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		perror("socket failed");
+		exit(6);
+	}
 
-    // Connect to the API server
-    struct sockaddr_in server;
-    server.sin_family = AF_INET;
-    server.sin_port = htons(m_port);
+	// Connect to the API server
+	struct sockaddr_in server;
+	server.sin_family = AF_INET;
+	server.sin_port = htons(m_port);
 
 	hostent *he = gethostbyname(m_host.c_str());
+
+	if (he == nullptr) {
+		printf("he failed \n");
+		exit(9);
+	}
+
 	memcpy(&server.sin_addr, he->h_addr_list[0], he->h_length);
 
-    if (connect(sock, (struct sockaddr *)&server, sizeof(server)) < 0) {
-        perror("connect failed");
+	if (connect(sock, (struct sockaddr *)&server, sizeof(server)) < 0) {
+		perror("connect failed");
 		exit(8);
-    }
+	}
 
-    // Send the request to the server
+	// Send the request to the server
 	std::string data = request->toString();
 
-    size_t written = ::send(sock, data.c_str(), data.size(), 0);
+	size_t written = ::send(sock, data.c_str(), data.size(), 0);
 
 	if (written != data.size()) {
 		perror("write to server vailed");
@@ -224,11 +155,13 @@ HttpServer::Response *HttpClient::get(HttpServer::Request *request, FILE *fhd)
 	int state = 0;
 	long count = -1;
 
-    while (true) {
+	while (true) {
 		if (receiveBlock(sock, state, line, retv, count, fhd)) {
 			break;
 		}
 	}
+
+	close(sock);
 
 	return retv;
 }

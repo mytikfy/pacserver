@@ -40,15 +40,16 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/pacmirrors.o \
 	${OBJECTDIR}/pacproxy.o \
-	${OBJECTDIR}/pacserver.o
+	${OBJECTDIR}/pacserver.o \
+	${OBJECTDIR}/pacworker.o
 
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-m64 -Wall
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=-m64 -Wall
+CXXFLAGS=-m64 -Wall
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -70,32 +71,37 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/server: ${OBJECTFILES}
 ${OBJECTDIR}/httpclient.o: httpclient.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpclient.o httpclient.cc
+	$(COMPILE.cc) -O3 -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpclient.o httpclient.cc
 
 ${OBJECTDIR}/httpserver.o: httpserver.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpserver.o httpserver.cc
+	$(COMPILE.cc) -O3 -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpserver.o httpserver.cc
 
 ${OBJECTDIR}/main.o: main.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cc
+	$(COMPILE.cc) -O3 -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cc
 
 ${OBJECTDIR}/pacmirrors.o: pacmirrors.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacmirrors.o pacmirrors.cc
+	$(COMPILE.cc) -O3 -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacmirrors.o pacmirrors.cc
 
 ${OBJECTDIR}/pacproxy.o: pacproxy.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacproxy.o pacproxy.cc
+	$(COMPILE.cc) -O3 -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacproxy.o pacproxy.cc
 
 ${OBJECTDIR}/pacserver.o: pacserver.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacserver.o pacserver.cc
+	$(COMPILE.cc) -O3 -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacserver.o pacserver.cc
+
+${OBJECTDIR}/pacworker.o: pacworker.cc nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacworker.o pacworker.cc
 
 # Subprojects
 .build-subprojects:

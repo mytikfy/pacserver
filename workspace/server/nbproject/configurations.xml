@@ -4,10 +4,22 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <itemPath>htmls/clients.html</itemPath>
+      <itemPath>htmls/copyright.html</itemPath>
+      <itemPath>htmls/datatable.html</itemPath>
+      <itemPath>htmls/footer.html</itemPath>
+      <itemPath>htmls/header.html</itemPath>
+      <itemPath>htmls/index.html</itemPath>
+      <itemPath>htmls/packages.html</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="prepared" projectFiles="true">
+        <itemPath>clients.html.h</itemPath>
+        <itemPath>index.html.h</itemPath>
+        <itemPath>packages.html.h</itemPath>
+      </logicalFolder>
       <itemPath>httpclient.cc</itemPath>
       <itemPath>httpclient.h</itemPath>
       <itemPath>httpserver.cc</itemPath>
@@ -19,6 +31,8 @@
       <itemPath>pacproxy.h</itemPath>
       <itemPath>pacserver.cc</itemPath>
       <itemPath>pacserver.h</itemPath>
+      <itemPath>pacworker.cc</itemPath>
+      <itemPath>pacworker.h</itemPath>
       <itemPath>version.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -30,18 +44,18 @@
                    displayName="Important Files"
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>.dockerignore</itemPath>
       <itemPath>.gitignore</itemPath>
-      <itemPath>docker/Dockerfile</itemPath>
+      <itemPath>Dockerfile</itemPath>
       <itemPath>Makefile</itemPath>
       <itemPath>../../Readme.md</itemPath>
       <itemPath>dockerstart.sh</itemPath>
+      <itemPath>../lnk</itemPath>
       <itemPath>../pactest/mirrorlist</itemPath>
+      <itemPath>mirrors/mirrorlist.x86</itemPath>
       <itemPath>../pactest/pac.sh</itemPath>
     </logicalFolder>
   </logicalFolder>
-  <sourceRootList>
-    <Elem>../..</Elem>
-  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -52,14 +66,12 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>2</developmentMode>
           <architecture>2</architecture>
           <standard>10</standard>
           <commandLine>-ffunction-sections -fdata-sections -pedantic -Wall -fsanitize=undefined -Wsuggest-override</commandLine>
           <warningLevel>2</warningLevel>
         </cTool>
         <ccTool>
-          <developmentMode>2</developmentMode>
           <architecture>2</architecture>
           <standard>11</standard>
           <commandLine>-ffunction-sections -fdata-sections -pedantic -Wall -fsanitize=undefined -Wsuggest-override</commandLine>
@@ -70,9 +82,42 @@
           <warningLevel>2</warningLevel>
         </asmTool>
         <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pacproxy</output>
+          <commandlineTool>../lnk</commandlineTool>
           <commandLine>-ffunction-sections -fdata-sections -fsanitize=undefined</commandLine>
         </linkerTool>
       </compileType>
+      <item path="clients.html.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/clients.html" ex="false" tool="3" flavor2="0">
+        <customTool>
+          <customToolCommandline>../xrc -o "$@" "$&lt;" </customToolCommandline>
+          <customToolOutputs>clients.html.h</customToolOutputs>
+          <customToolAdditionalDep>../xrc</customToolAdditionalDep>
+        </customTool>
+      </item>
+      <item path="htmls/copyright.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/datatable.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/footer.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/header.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/index.html" ex="false" tool="3" flavor2="0">
+        <customTool>
+          <customToolCommandline>../xrc -o "$@" "$&lt;" </customToolCommandline>
+          <customToolOutputs>index.html.h</customToolOutputs>
+          <customToolAdditionalDep>../xrc</customToolAdditionalDep>
+        </customTool>
+      </item>
+      <item path="htmls/packages.html" ex="false" tool="3" flavor2="0">
+        <customTool>
+          <customToolCommandline>../xrc -o "$@" "$&lt;" </customToolCommandline>
+          <customToolOutputs>packages.html.h</customToolOutputs>
+          <customToolAdditionalDep>../xrc</customToolAdditionalDep>
+        </customTool>
+      </item>
       <item path="httpclient.cc" ex="false" tool="1" flavor2="0">
       </item>
       <item path="httpclient.h" ex="false" tool="3" flavor2="0">
@@ -81,7 +126,11 @@
       </item>
       <item path="httpserver.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="index.html.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="packages.html.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="pacmirrors.cc" ex="false" tool="1" flavor2="0">
       </item>
@@ -92,8 +141,15 @@
       <item path="pacproxy.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="pacserver.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <additionalDep>index.html.h packages.html.h clients.html.h</additionalDep>
+        </ccTool>
       </item>
       <item path="pacserver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pacworker.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="pacworker.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="version.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -106,10 +162,18 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>6</developmentMode>
+          <architecture>2</architecture>
+          <standard>10</standard>
+          <commandLine>-Wall</commandLine>
+          <warningLevel>2</warningLevel>
         </cTool>
         <ccTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>6</developmentMode>
+          <architecture>2</architecture>
+          <standard>11</standard>
+          <commandLine>-Wall</commandLine>
+          <warningLevel>2</warningLevel>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -118,6 +182,22 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="clients.html.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/clients.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/copyright.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/datatable.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/footer.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/header.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/index.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="htmls/packages.html" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="httpclient.cc" ex="false" tool="1" flavor2="0">
       </item>
       <item path="httpclient.h" ex="false" tool="3" flavor2="0">
@@ -126,7 +206,11 @@
       </item>
       <item path="httpserver.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="index.html.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="packages.html.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="pacmirrors.cc" ex="false" tool="1" flavor2="0">
       </item>
@@ -139,6 +223,10 @@
       <item path="pacserver.cc" ex="false" tool="1" flavor2="0">
       </item>
       <item path="pacserver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pacworker.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="pacworker.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="version.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -3,15 +3,13 @@
     <type>org.netbeans.modules.cnd.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>server</name>
+            <name>pacproxy</name>
             <c-extensions/>
             <cpp-extensions>cc</cpp-extensions>
             <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
-            <sourceRootList>
-                <sourceRootElem>../..</sourceRootElem>
-            </sourceRootList>
+            <sourceRootList/>
             <confList>
                 <confElem>
                     <name>Debug</name>
@@ -26,5 +24,14 @@
                 <project-formatting-style>false</project-formatting-style>
             </formatting>
         </data>
+        <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
+            <module name="org-netbeans-modules-html-editor-lib">
+                <property name="default-html-public-id" value="HTML5"/>
+            </module>
+            <module name="org-netbeans-modules-projectimport-eclipse-core"/>
+            <module name="org-netbeans-modules-editor-indent">
+                <node name="CodeStyle"/>
+            </module>
+        </preferences>
     </configuration>
 </project>

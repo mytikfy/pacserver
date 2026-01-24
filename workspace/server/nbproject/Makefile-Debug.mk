@@ -40,7 +40,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/pacmirrors.o \
 	${OBJECTDIR}/pacproxy.o \
-	${OBJECTDIR}/pacserver.o
+	${OBJECTDIR}/pacserver.o \
+	${OBJECTDIR}/pacworker.o
 
 
 # C Compiler Flags
@@ -61,41 +62,58 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/server
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pacproxy
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/server: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pacproxy: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/server ${OBJECTFILES} ${LDLIBSOPTIONS} -ffunction-sections -fdata-sections -fsanitize=undefined
+	../lnk -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pacproxy ${OBJECTFILES} ${LDLIBSOPTIONS} -ffunction-sections -fdata-sections -fsanitize=undefined
+
+clients.html.h: htmls/clients.html ../xrc nbproject/Makefile-${CND_CONF}.mk
+	@echo Performing Custom Build Step
+	../xrc -o "$@" "$<" 
+
+index.html.h: htmls/index.html ../xrc nbproject/Makefile-${CND_CONF}.mk
+	@echo Performing Custom Build Step
+	../xrc -o "$@" "$<" 
+
+packages.html.h: htmls/packages.html ../xrc nbproject/Makefile-${CND_CONF}.mk
+	@echo Performing Custom Build Step
+	../xrc -o "$@" "$<" 
 
 ${OBJECTDIR}/httpclient.o: httpclient.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -O -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpclient.o httpclient.cc
+	$(COMPILE.cc) -g -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpclient.o httpclient.cc
 
 ${OBJECTDIR}/httpserver.o: httpserver.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -O -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpserver.o httpserver.cc
+	$(COMPILE.cc) -g -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/httpserver.o httpserver.cc
 
 ${OBJECTDIR}/main.o: main.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -O -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cc
+	$(COMPILE.cc) -g -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cc
 
 ${OBJECTDIR}/pacmirrors.o: pacmirrors.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -O -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacmirrors.o pacmirrors.cc
+	$(COMPILE.cc) -g -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacmirrors.o pacmirrors.cc
 
 ${OBJECTDIR}/pacproxy.o: pacproxy.cc nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -O -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacproxy.o pacproxy.cc
+	$(COMPILE.cc) -g -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacproxy.o pacproxy.cc
 
-${OBJECTDIR}/pacserver.o: pacserver.cc nbproject/Makefile-${CND_CONF}.mk
+${OBJECTDIR}/pacserver.o: pacserver.cc index.html.h packages.html.h clients.html.h nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -O -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacserver.o pacserver.cc
+	$(COMPILE.cc) -g -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacserver.o pacserver.cc
+
+${OBJECTDIR}/pacworker.o: pacworker.cc nbproject/Makefile-${CND_CONF}.mk
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pacworker.o pacworker.cc
 
 # Subprojects
 .build-subprojects:
@@ -103,6 +121,9 @@ ${OBJECTDIR}/pacserver.o: pacserver.cc nbproject/Makefile-${CND_CONF}.mk
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
+	${RM} clients.html.h
+	${RM} index.html.h
+	${RM} packages.html.h
 
 # Subprojects
 .clean-subprojects:
